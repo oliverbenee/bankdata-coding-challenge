@@ -4,12 +4,18 @@
   "description": "bankdata coding challenge",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cross-env NODE_ENV=test jest --testTimeout=5000",
     "start": "node index.js"
   },
   "author": "Oliver Medoc Benée Petersen",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "body-parser": "^1.20.2",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jest": "^29.6.4",
+    "pg": "^8.11.3",
+    "supertest": "^6.3.3"
   }
 }
