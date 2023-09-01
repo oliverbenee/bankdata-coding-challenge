@@ -13,6 +13,7 @@ app.get("/", (req, res) => {
 // Databazz
 const db = require('../db/db')
 app.get('/api/accounts', db.getAccounts)
+app.post('/api/accounts', db.addAccount)
 
 let port = 3000
 app.listen(port, () => {

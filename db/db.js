@@ -14,6 +14,22 @@ const getAccounts = (request, response) => {
   })
 }
 
+const addAccount = (request, response) => {
+  pool.query(
+    'INSERT INTO accounts (name, funds) values ($1, $2)', 
+    [request.body.name, request.body.funds], 
+    (error, results) => {
+      if(error) { 
+        throw error
+        return response.status(400).send(error)
+      } else {
+        return response.status(201).send("added")
+      }
+    }
+  )
+}
+
 module.exports = { 
-  getAccounts
+  getAccounts,
+  addAccount
 }
