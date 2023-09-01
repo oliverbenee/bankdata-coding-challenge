@@ -1,0 +1,15 @@
+{
+  "name": "bankdata_coding_challenge",
+  "version": "1.0.0",
+  "description": "bankdata coding challenge",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Oliver Medoc Benée Petersen",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
