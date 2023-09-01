@@ -46,6 +46,17 @@ describe("POST api/accounts", () => {
       expect(newAccountsLength).toBeGreaterThan(oldLength)
     })
   })
+
+  it("should let accounts hold money", async() => {
+    let accounts = (await request(app).get("/api/accounts")).body
+    let account1funds = accounts.shift().funds;
+    let account2funds = accounts.shift().funds;
+
+    expect(account1funds).not.toBeNull()
+    expect(account1funds).toBeGreaterThan(0)
+    expect(account2funds).not.toBeNull()
+    expect(account2funds).toBeGreaterThan(0)
+  })
 })
 
 afterEach(async () => { });
