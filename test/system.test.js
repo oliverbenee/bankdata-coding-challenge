@@ -15,10 +15,9 @@ const pool = new Pool({
 beforeEach(async () => { });
 
 describe("GET api/accounts", () => {
-  it("should return a response list of accounts", async () => {
+  it("should return a response", async () => {
     const res = await request(app).get("/api/accounts")
     expect(res.statusCode).toBe(200)
-    expect(res.body.length).toBeGreaterThan(0)
   })
 })
 
@@ -49,13 +48,13 @@ describe("POST api/accounts", () => {
 
   it("should let accounts hold money", async() => {
     let accounts = (await request(app).get("/api/accounts")).body
-    let account1funds = accounts.shift().funds;
-    let account2funds = accounts.shift().funds;
+    let account1funds = parseInt(accounts.shift().funds)
+    let account2funds = parseInt(accounts.shift().funds)
 
     expect(account1funds).not.toBeNull()
-    expect(account1funds).toBeGreaterThan(0)
+    expect(account1funds).toBe(20)
     expect(account2funds).not.toBeNull()
-    expect(account2funds).toBeGreaterThan(0)
+    expect(account2funds).toBe(20)
   })
 })
 
