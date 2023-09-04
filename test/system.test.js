@@ -1,35 +1,27 @@
-const Pool = require("pg").Pool;
 const request = require("supertest");
-require("dotenv").config();
 
 const app = require("../app/index.js").app;
-
-const pool = new Pool({
-  user: process.env.user,
-  host: process.env.host,
-  database: process.env.database,
-  password: process.env.password,
-  port: process.env.port,
-})
 
 beforeEach(async () => { });
 
 describe("GET api/accounts", () => {
   it("should return a response", async () => {
-    const res = await request(app).get("/api/accounts")
-    expect(res.statusCode).toBe(200)
+    const res = await request(app)
+    .get("/api/accounts")
+    .expect(200)
+    .expect('Content-Type', /json/)
   })
 })
 
-let testAccount = {
-  "name": "oliver",
-  "funds": 20
-}
+const daoStub = require('../dao/daoStub.js')
 
 describe("POST api/accounts", () => {
   it("should have a post account endpoint", async () => {
-    let res = await request(app).post("/api/accounts").send(testAccount);
-    expect(res.statusCode).toBe(201);
+    const res = await request(app)
+    .post("/api/accounts")
+    .send(daoStub.testAccounts[0])
+    .expect(201)
+    .expect('Content-Type', /json/)
   });
 
   it("should add the account to the database", async () => {
@@ -37,7 +29,7 @@ describe("POST api/accounts", () => {
     let oldLength = accounts.body.length
     let newAccountsLength
 
-    request(app).post("/api/accounts").send(testAccount)
+    request(app).post("/api/accounts").send(daoStub.testAccounts[1])
     .then(async(res) => {
       expect(res.statusCode).toBe(201)
       let newAccounts = await request(app).get("/api/accounts")
@@ -47,12 +39,21 @@ describe("POST api/accounts", () => {
   })
 
   it("should let accounts hold money", async() => {
-    let accounts = (await request(app).get("/api/accounts")).body
-    let account1funds = parseInt(accounts.shift().funds)
-    let account2funds = parseInt(accounts.shift().funds)
+    const res = await request(app)
+    .get("/api/accounts")
+    .expect(200)
+    // Supertest has built-in features for checking request bodies, but they seem to be very syntax dependent. 
+    // .expect([
+    //     {"id": "1", "name": "Oliver", "funds": "20" },
+    //     {"id": "2", "name": "Klaus", "funds": "201"}
+    //   ])
+
+    let accounts = res.body
+    let account1funds = parseInt(accounts.pop().funds)
+    let account2funds = parseInt(accounts.pop().funds)
 
     expect(account1funds).not.toBeNull()
-    expect(account1funds).toBe(20)
+    expect(account1funds).toBe(201)
     expect(account2funds).not.toBeNull()
     expect(account2funds).toBe(20)
   })
