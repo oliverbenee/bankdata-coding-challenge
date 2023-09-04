@@ -47,6 +47,8 @@ describe("POST api/accounts", () => {
     //     {"id": "1", "name": "Oliver", "funds": "20" },
     //     {"id": "2", "name": "Klaus", "funds": "201"}
     //   ])
+    await request(app).post("/api/accounts").send(daoStub.testAccounts[0])
+    await request(app).post("/api/accounts").send(daoStub.testAccounts[1])
 
     let accounts = res.body
     let account1funds = parseInt(accounts.pop().funds)

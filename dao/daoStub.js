@@ -18,6 +18,9 @@ class DaoStub {
   }
 
   async transferMoney(from, to, amount){
+    if(!from || !to || !amount){
+      throw new Error("invalid arguments. Missing from, to, or amount")
+    }
     console.log("PARAMS: ", from, to, amount)
     let fromA = accounts.find((account) => account.id === from)
     let toA = accounts.find((account) => account.id === to)
