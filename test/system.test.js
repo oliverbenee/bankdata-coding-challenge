@@ -47,8 +47,6 @@ describe("POST api/accounts", () => {
     //     {"id": "1", "name": "Oliver", "funds": "20" },
     //     {"id": "2", "name": "Klaus", "funds": "201"}
     //   ])
-    await request(app).post("/api/accounts").send(daoStub.testAccounts[0])
-    await request(app).post("/api/accounts").send(daoStub.testAccounts[1])
 
     let accounts = res.body
     let account1funds = parseInt(accounts.pop().funds)
@@ -62,9 +60,9 @@ describe("POST api/accounts", () => {
 })
 
 describe("PUT api/transfer", () => {
-  it("should have transfer endpoint", async () => {
+  it("should have transfer endpoint, that produces error with no params", async () => {
     await request(app).put("/api/transfer")
-    .expect(200)
+    .expect(500)
   })
 
   it("should allow money to be transferred", async () => {   
@@ -79,7 +77,7 @@ describe("PUT api/transfer", () => {
     .send({
       "from": 2,
       "to": 1,
-      "funds": 10
+      "amount": 10
     })
     .expect(200)
 

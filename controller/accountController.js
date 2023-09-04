@@ -23,11 +23,10 @@ class AccountController {
 
   async transferMoney(req, res){
     try {
-      console.log("body is: ", req.body)
-      const id = await accountService.transferMoney(req.body)
+      // console.log("body is: ", req.body)
+      const id = await accountService.transferMoney(req.body.from, req.body.to, req.body.amount)
       res.status(200).json(id)
     } catch(error){
-      console.log(error)
       res.status(500).json({"error": error})
     }
   }

@@ -1,5 +1,3 @@
-const accountDao = require('../dao/daoStub')
-// const accountDao = require('../dao/accountDao')
 
 class AccountService {
   createAccount(accountObj){
@@ -7,9 +5,8 @@ class AccountService {
     accountDao.createAccount(name, funds)
   }
 
-  transferMoney(accountObj){
-    let {from, to, funds} = accountObj
-    return accountDao.transferMoney(from, to, funds)
+  transferMoney(from, to, amount){
+    return accountDao.transferMoney(from, to, amount)
   }
 
   async getAccounts(){

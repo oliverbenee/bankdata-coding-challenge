@@ -1,4 +1,4 @@
-let accounts = [
+let accountsTemplates = [
   {
     "id": 1,
     "name": "Oliver",
@@ -11,6 +11,8 @@ let accounts = [
   }
 ]
 
+let accounts = []
+
 class DaoStub {
   // throw failures up to service layer.
   async createAccount(name, funds){
@@ -19,11 +21,11 @@ class DaoStub {
 
   async transferMoney(from, to, amount){
     if(!from || !to || !amount){
-      throw new Error("invalid arguments. Missing from, to, or amount")
+      throw new Error(`invalid arguments. Missing from, to, or amount: ${from}, ${to}, ${amount}`)
     }
     console.log("PARAMS: ", from, to, amount)
-    let fromA = accounts.find((account) => account.id === from)
-    let toA = accounts.find((account) => account.id === to)
+    let fromA = accounts[parseInt(from)-1]
+    let toA = accounts[parseInt(to)-1]
 
     fromA.funds -= amount
     toA.funds += amount
@@ -37,4 +39,4 @@ class DaoStub {
 }
 
 module.exports = new DaoStub()
-module.exports.testAccounts = accounts
+module.exports.testAccounts = accountsTemplates
