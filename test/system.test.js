@@ -2,6 +2,14 @@ const request = require("supertest");
 
 const app = require("../app/index.js").app;
 
+const db = require('../db/db')
+
+// database reset.
+if(process.env.NODE_ENV === 'staging'){
+  db.raw("truncate table accounts; ALTER SEQUENCE accounts_id_seq RESTART WITH 1")
+  .then(() => {})
+}
+
 beforeEach(async () => { });
 
 describe("GET api/accounts", () => {
@@ -67,11 +75,13 @@ describe("PUT api/transfer", () => {
 
   it("should allow money to be transferred", async () => {   
     let accounts = (await request(app).get("/api/accounts")).body
-    let account1funds = parseInt(accounts.shift().funds)
-    let account2funds = parseInt(accounts.shift().funds)
+    console.log("ACC, " , accounts)
+    let account1funds = parseFloat(accounts.shift().funds)
+    let account2funds = parseFloat(accounts.shift().funds)
     expect(account1funds).toBe(20)
     expect(account2funds).toBe(201)
 
+    // FIXME: id's make tests non-repeatable. 
     await request(app)
     .put("/api/transfer")
     .send({
@@ -81,9 +91,10 @@ describe("PUT api/transfer", () => {
     })
     .expect(200)
 
-    accounts = (await request(app).get("/api/accounts")).body
-    let a1new = parseInt(accounts.shift().funds)
-    let a2new = parseInt(accounts.shift().funds)
+    let newAccounts = (await request(app).get("/api/accounts")).body
+    console.log(newAccounts)
+    let a1new = parseFloat(newAccounts.shift().funds)
+    let a2new = parseFloat(newAccounts.shift().funds)
     expect(a1new).toBe(30)
     expect(a2new).toBe(191)
   })

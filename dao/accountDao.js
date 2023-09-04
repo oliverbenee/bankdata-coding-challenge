@@ -13,10 +13,31 @@ class AccountDao {
 
     return id
   }
+
+  async transferMoney(from, to, amount){
+    if(!from || !to || !amount){
+      throw new Error('Invalid arguments')
+    }
+
+    const res = await db.transaction(trx => {
+      db('accounts')
+      .transacting(trx).decrement('funds', amount).where('id', '=', from)
+      .then((trx) => {
+        return db('accounts')
+        .increment('funds',amount).where('id','=',to)
+      })
+      .then(trx.commit)
+      .catch(trx.rollback)
+    })
+    .then((res) => {console.log(`OK ${res}`)})
+    return res
+  }
+
   async getAccounts(){
     const res = await db('accounts')
     .withSchema('public')
     .select('name', 'funds')
+    .orderBy('id')
     .then((result) => { return result })
     return res
   }

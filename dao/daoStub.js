@@ -11,7 +11,7 @@ let accountsTemplates = [
   }
 ]
 
-let accounts = []
+let accounts = accountsTemplates
 
 class DaoStub {
   // throw failures up to service layer.
@@ -27,8 +27,8 @@ class DaoStub {
     let fromA = accounts[parseInt(from)-1]
     let toA = accounts[parseInt(to)-1]
 
-    fromA.funds -= amount
-    toA.funds += amount
+    fromA.funds -= parseInt(amount)
+    toA.funds += parseInt(amount)
 
     return "OK"
   }

@@ -1,3 +1,10 @@
+let accountDao
+if(process.env.NODE_ENV === 'staging'){
+  accountDao = require('../dao/accountDao')
+} else {
+  accountDao = require('../dao/daoStub')
+}
+console.log(accountDao)
 
 class AccountService {
   createAccount(accountObj){

@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --testTimeout=5000 --detectOpenHandles",
+    "teststaging__force": "cross-env NODE_ENV=staging jest --testTimeout=5000 --detectOpenHandles",
     "migrate": "knex migrate:latest --knexfile db/knexfile.js",
-    "start": "nodemon index.js"
+    "dev": "cross-env NODE_ENV=test nodemon index.js",
+    "start": "cross-env NODE_ENV=staging nodemon index.js"
   },
   "author": "Oliver Medoc Benée Petersen",
   "license": "ISC",
