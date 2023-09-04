@@ -20,4 +20,17 @@ class AccountController {
       res.status(500).json({"error": error})
     }
   }
+
+  async transferMoney(req, res){
+    try {
+      console.log("body is: ", req.body)
+      const id = await accountService.transferMoney(req.body)
+      res.status(200).json(id)
+    } catch(error){
+      console.log(error)
+      res.status(500).json({"error": error})
+    }
+  }
+}
+
 module.exports = new AccountController();

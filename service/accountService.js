@@ -7,6 +7,11 @@ class AccountService {
     accountDao.createAccount(name, funds)
   }
 
+  transferMoney(accountObj){
+    let {from, to, funds} = accountObj
+    return accountDao.transferMoney(from, to, funds)
+  }
+
   async getAccounts(){
     const res = await accountDao.getAccounts();
     return res
