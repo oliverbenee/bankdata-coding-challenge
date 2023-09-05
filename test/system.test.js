@@ -42,7 +42,7 @@ describe("POST api/accounts", () => {
       expect(res.statusCode).toBe(201)
       let newAccounts = await request(app).get("/api/accounts")
       let newAccountsLength = await newAccounts.body.length
-      expect(newAccountsLength).toBeGreaterThan(oldLength)
+      expect(newAccountsLength).toBe(oldLength+1)
     })
   })
 
@@ -73,15 +73,36 @@ describe("PUT api/transfer", () => {
     .expect(500)
   })
 
+  // this test was made after the one allowing for transfer, but supertest seems to create a race condition. 
+  it("should block a transfer if the funds do not exist", async () => {
+    let accounts = (await request(app).get("/api/accounts")).body
+    let account1funds = parseFloat(accounts.shift().funds)
+    let account2funds = parseFloat(accounts.shift().funds)
+
+    await request(app)
+    .put("/api/transfer")
+    .send({
+      "from": 2,
+      "to": 1,
+      "amount": 999
+    })
+    .expect(500)
+
+    let accounts2 = (await request(app).get("/api/accounts")).body
+    let account1fundsafter = parseFloat(accounts2.shift().funds)
+    let account2fundsafter = parseFloat(accounts2.shift().funds)
+    expect(account1fundsafter).toBe(account1funds)
+    expect(account2fundsafter).toBe(account2funds)
+  })
+
   it("should allow money to be transferred", async () => {   
     let accounts = (await request(app).get("/api/accounts")).body
-    console.log("ACC, " , accounts)
+    expect(accounts.length).toBe(2)
     let account1funds = parseFloat(accounts.shift().funds)
     let account2funds = parseFloat(accounts.shift().funds)
     expect(account1funds).toBe(20)
     expect(account2funds).toBe(201)
 
-    // FIXME: id's make tests non-repeatable. 
     await request(app)
     .put("/api/transfer")
     .send({
@@ -89,6 +110,7 @@ describe("PUT api/transfer", () => {
       "to": 1,
       "amount": 10
     })
+    .expect('"OK"')
     .expect(200)
 
     let newAccounts = (await request(app).get("/api/accounts")).body
@@ -97,6 +119,23 @@ describe("PUT api/transfer", () => {
     let a2new = parseFloat(newAccounts.shift().funds)
     expect(a1new).toBe(30)
     expect(a2new).toBe(191)
+  })
+
+  it("should not allow money to be transferred from non-existent accounts", async () => {
+    let accounts = (await request(app).get("/api/accounts")).body
+    let account1funds = parseFloat(accounts.shift().funds)
+
+    await request(app)
+    .put("/api/transfer")
+    .send({
+      "from": 9999,
+      "to": 1,
+      "amount": 999
+    })
+    .expect(500)
+
+    let account1fundsafter = parseFloat((await request(app).get("/api/accounts")).body.shift().funds)
+    expect(account1fundsafter).toBe(account1funds)
   })
 })
 

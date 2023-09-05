@@ -11,7 +11,7 @@ let accountsTemplates = [
   }
 ]
 
-let accounts = accountsTemplates
+let accounts = []
 
 class DaoStub {
   // throw failures up to service layer.
@@ -27,6 +27,12 @@ class DaoStub {
     let fromA = accounts[parseInt(from)-1]
     let toA = accounts[parseInt(to)-1]
 
+    if(fromA.funds < amount){
+      let error = new Error(`invalid arguments. Amount greater than funds in account ${from}: amount is ${amount}, account has ${from.funds}`)
+      console.log(error)
+      throw error
+      return "FAILED"
+    }
     fromA.funds -= parseInt(amount)
     toA.funds += parseInt(amount)
 
@@ -35,6 +41,10 @@ class DaoStub {
 
   async getAccounts(){
     return accounts
+  }
+
+  dropAll(){
+    accounts = []
   }
 }
 

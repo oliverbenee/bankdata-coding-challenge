@@ -27,7 +27,7 @@ class AccountController {
       const id = await accountService.transferMoney(req.body.from, req.body.to, req.body.amount)
       res.status(200).json(id)
     } catch(error){
-      res.status(500).json({"error": error})
+      res.status(500).json({"error": error.toString()})
     }
   }
 }

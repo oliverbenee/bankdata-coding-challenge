@@ -19,6 +19,15 @@ class AccountDao {
       throw new Error('Invalid arguments')
     }
 
+    const fromFunds = await db('accounts')
+    .select('funds').where('id','=', from)
+
+    if(fromFunds[0].funds < amount){
+      throw new Error(`invalid arguments. Amount greater than funds in account ${from}: amount is ${amount}, account has ${fromFunds[0].funds}`)
+    } else {
+      console.log("funds is: ", fromFunds[0].funds, " and amount is: ", amount)
+    }
+
     const res = await db.transaction(trx => {
       db('accounts')
       .transacting(trx).decrement('funds', amount).where('id', '=', from)
@@ -30,7 +39,7 @@ class AccountDao {
       .catch(trx.rollback)
     })
     .then((res) => {console.log(`OK ${res}`)})
-    return res
+    return "OK"
   }
 
   async getAccounts(){
