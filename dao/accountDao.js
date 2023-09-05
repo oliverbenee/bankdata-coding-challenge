@@ -22,7 +22,7 @@ class AccountDao {
     const fromFunds = await db('accounts')
     .select('funds').where('id','=', from)
 
-    if(fromFunds[0].funds < amount){
+    if(fromFunds[0].funds < parseFloat(amount)){
       throw new Error(`invalid arguments. Amount greater than funds in account ${from}: amount is ${amount}, account has ${fromFunds[0].funds}`)
     } else {
       console.log("funds is: ", fromFunds[0].funds, " and amount is: ", amount)
@@ -45,7 +45,7 @@ class AccountDao {
   async getAccounts(){
     const res = await db('accounts')
     .withSchema('public')
-    .select('name', 'funds')
+    .select('id', 'name', 'funds')
     .orderBy('id')
     .then((result) => { return result })
     return res
